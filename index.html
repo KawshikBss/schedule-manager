@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Schedule Manager</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="./main.css" />
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <main>
+            <form>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="title"
+                        aria-describedby="titleHelp"
+                        onchange="handleTitleChange()"
+                    />
+                    <!-- <div id="titleHelp" class="form-text">
+                        We'll never share your email with anyone else.
+                    </div> -->
+                </div>
+                <div class="mb-3">
+                    <label for="topic" class="form-label">Topic</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="topic"
+                        aria-describedby="topicHelp"
+                        onchange="handleTopicChange()"
+                    />
+                </div>
+                <div class="mb-3">
+                    <label for="plan" class="form-label">Week Plan</label>
+                    <select
+                        class="form-select"
+                        id="plan"
+                        aria-label="Week Plan"
+                    >
+                        <!-- <option selected>Open this select menu</option> -->
+                        <option value="168">Weekly</option>
+                        <option value="24">Daily</option>
+                        <option value="720">Monthly</option>
+                    </select>
+                </div>
+
+                <div id="empty-cell"></div>
+                <div class="col mb-3">
+                    <button
+                        type="button"
+                        onclick="addDay()"
+                        class="btn btn-outline-info"
+                    >
+                        Add Day
+                    </button>
+                </div>
+                <button
+                    type="button"
+                    onclick="printDiv()"
+                    class="btn btn-primary"
+                >
+                    Submit
+                </button>
+                <button
+                    type="button"
+                    id="reset-btn"
+                    onclick="reset()"
+                    class="btn btn-warning"
+                >
+                    Reset
+                </button>
+            </form>
+            <div id="preview">
+                <table class="table table-bordered border-black">
+                    <thead>
+                        <tr>
+                            <th id="schedule-head">
+                                Weekplan - **/**/** - **/**/** -
+                                <span id="schedule-title">________</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th id="schedule-topic">Topic: ________</th>
+                        </tr>
+                        <!-- <tr>
+                            <th>Daily Tasks</th>
+                        </tr> -->
+                    </thead>
+                </table>
+                <div id="new-insertions"></div>
+            </div>
+        </main>
+        <script>
+            var days = [];
+            var types = [
+                "English",
+                "Mathematics",
+                "Biology",
+                "Chemistry",
+                "Physics",
+                "History",
+                "Ethics",
+            ];
+            function reset() {
+                document
+                    .querySelectorAll(`[data-type*="day-input"]`)
+                    .map((div) => (div.outerHTML = ""));
+                document.getElementById("new-insertions").innerHTML = "";
+                days = [];
+            }
+            function handleTitleChange() {
+                const titleInput = document.getElementById("title");
+                const title = titleInput.value;
+                const titleElement = document.getElementById("schedule-title");
+                titleElement.innerText = title.length ? title : "________";
+            }
+            function handleTopicChange() {
+                const topicInput = document.getElementById("topic");
+                const topic = topicInput.value;
+                const topicElement = document.getElementById("schedule-topic");
+                topicElement.innerText =
+                    "Topic: " + (topic.length ? topic : "________");
+            }
+            function updatePreview() {
+                const table = document.getElementById("new-insertions");
+                const tableHtml = days
+                    .map(
+                        (day) => `
+                    <table class="table table-bordered border-black">
+                        <thead>
+                            <tr>
+                                <th id="day-name-preview-${day.id}">${
+                            day.name
+                        }</th>
+                                <th>
+                                    My tasks
+                                </th>
+                                <th>
+                                    feedback
+                                </th>
+                                <th>
+                                    teacher
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${day.tasks
+                                .map(
+                                    (task) => `
+                                <tr id="task-${day.id}-${task.id}">
+                                    <td colspan=2 id="name-preview-${day.id}-${task.id}">
+                                        ${task.type}: ${task.description}
+                                    </td>
+                                    <td>***</td>
+                                    <td></td>
+                                </tr>
+                            `
+                                )
+                                .join("")}
+                        </tbody>
+                    </table>
+                    `
+                    )
+                    .join("");
+                table.innerHTML = tableHtml;
+            }
+            function handleDayChange(dayId) {
+                const dayInputElement = document.getElementById(`day-${dayId}`);
+                const dayNamePreviewElement = document.getElementById(
+                    `day-name-preview-${dayId}`
+                );
+                const dayName = dayInputElement.value;
+                days[days.findIndex((day) => day.id === dayId)].name = dayName;
+                dayNamePreviewElement.innerHTML = dayName;
+            }
+            function handleTaskTypeChange(dayId, taskId) {
+                const taskInput = document.getElementById(
+                    `${dayId}-task-type-${taskId}`
+                );
+                days.forEach((item) => {
+                    if (item.id === dayId) {
+                        item.tasks.forEach((task) => {
+                            if (task.id === taskId) {
+                                task.type = taskInput.value;
+                            }
+                        });
+                    }
+                });
+                updatePreview();
+            }
+            function handleTaskDescriptionChange(dayId, taskId) {
+                const taskInput = document.getElementById(
+                    `${dayId}-task-description-${taskId}`
+                );
+                days.forEach((item) => {
+                    if (item.id === dayId) {
+                        item.tasks.forEach((task) => {
+                            if (task.id === taskId) {
+                                task.description = taskInput.value;
+                            }
+                        });
+                    }
+                });
+                updatePreview();
+            }
+            function addTask(dayId) {
+                const dayIndex = days.findIndex((day) => day.id === dayId);
+                const day = days[dayIndex];
+                const taskTypeInput = document.getElementById(
+                    `task-type-${day.id}`
+                );
+                const taskDescriptionInput = document.getElementById(
+                    `task-description-${day.id}`
+                );
+                const newTask = {
+                    id: day.tasks.length + 1,
+                    type: taskTypeInput.value,
+                    description: taskDescriptionInput.value,
+                };
+                taskTypeInput.value = "";
+                taskDescriptionInput.value = "";
+                days[dayIndex].tasks.push(newTask);
+                const dayElementTasksList = document.getElementById(
+                    `tasks-list-${dayId}`
+                );
+                var daysTaskListInnerHtml = "";
+                days.forEach((day) => {
+                    if (day.id === dayId) {
+                        day.tasks.forEach(
+                            (task) =>
+                                (daysTaskListInnerHtml += `
+                            <div class="row py-2" id="task-input-${day.id}-${
+                                    task.id
+                                }">
+                                <div class="col">
+                                    <select
+                                        class="form-select"
+                                        id="${day.id}-task-type-${task.id}"
+                                        aria-label="Type"
+                                        value="${task.type}"
+                                        onchange="handleTaskTypeChange(${
+                                            day.id
+                                        }, ${task.id})"
+                                    >
+                                    ${types.map(
+                                        (type) =>
+                                            `<option value="${type}" ${
+                                                type === task.type
+                                                    ? "selected"
+                                                    : ""
+                                            }>${type}</option>`
+                                    )}
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <input
+                                        id="${day.id}-task-description-${
+                                    task.id
+                                }"
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Task Description"
+                                        value="${task.description}"
+                                        onchange="handleTaskDescriptionChange(${
+                                            day.id
+                                        }, ${task.id})"
+                                    />
+                                </div>
+                                <div class="col">
+                                    <button type="button" onclick="removeTask(${
+                                        day.id
+                                    }, ${
+                                    task.id
+                                })" class="btn btn-outline-info">
+                                        -
+                                    </button>
+                                </div>
+                            </div>
+                        `)
+                        );
+                    }
+                });
+                dayElementTasksList.innerHTML = daysTaskListInnerHtml;
+                updatePreview();
+            }
+            function removeTask(dayId, taskId) {
+                const task = document.getElementById(
+                    `task-input-${dayId}-${taskId}`
+                );
+                task.outerHTML = "";
+                days.forEach((day) => {
+                    if (day.id === dayId) {
+                        day.tasks = day.tasks.filter(
+                            (task) => task.id !== taskId
+                        );
+                    }
+                });
+                updatePreview();
+            }
+            function addDay() {
+                const emptyCell = document.getElementById("empty-cell");
+                var day = {
+                    id: days.length + 1,
+                    name: "Monday",
+                    tasks: [],
+                };
+                days.push(day);
+                emptyCell.outerHTML = `
+                <div class="col" data-type="day-input">
+                    <div class="row">
+                        <div class="col">
+                            <label for="day-${
+                                day.id
+                            }" class="form-label">Day</label>
+                            <select
+                                class="form-select"
+                                id="day-${day.id}"
+                                aria-label="day-${day.id}"
+                                onChange="handleDayChange(${day.id})"
+                            >
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Weekly">Weekly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="tasks-list-${day.id}"></div>
+                    <div class="row py-2">
+                        <div class="col">
+                            <select
+                                class="form-select"
+                                id="task-type-${day.id}"
+                                aria-label="Type"
+                            >
+                            ${types.map(
+                                (type) =>
+                                    `<option value="${type}">${type}</option>`
+                            )}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input
+                                id="task-description-${day.id}"
+                                type="text"
+                                class="form-control"
+                                placeholder="Task Description"
+                            />
+                        </div>
+                        <div class="col">
+                            <button onclick="addTask(${
+                                day.id
+                            })" type="button" class="btn btn-outline-info">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="empty-cell"></div>`;
+                updatePreview();
+            }
+            function printDiv() {
+                var printContents =
+                    document.getElementById("preview").innerHTML;
+                var originalContents = document.body.innerHTML;
+
+                document.body.innerHTML = printContents;
+
+                window.print();
+
+                document.body.innerHTML = originalContents;
+            }
+            document
+                .getElementById("reset-btn")
+                .addEventListener("click", reset);
+        </script>
+    </body>
+</html>
