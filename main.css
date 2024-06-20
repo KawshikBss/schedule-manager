@@ -33,15 +33,3 @@ table {
 #preview > table > thead > tr > th:nth-child(2) {
     text-align: left;
 }
-
-@media print {
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        border: 1px solid black; /* Ensure the table itself has a border */
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-    }
-}
