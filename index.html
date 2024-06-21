@@ -10,6 +10,7 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
         />
+        <link rel="stylesheet" href="./sb-admin-2.css" />
         <link rel="stylesheet" href="./main.css" />
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
@@ -21,9 +22,94 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"
         ></script>
+        <link
+            href="vendor/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet"
+        />
     </head>
     <body>
         <main>
+            <ul
+                class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+                id="accordionSidebar"
+            >
+                <!-- Sidebar - Brand -->
+                <a
+                    class="sidebar-brand d-flex align-items-center justify-content-center mt-4"
+                    href="index.html"
+                >
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="fas fa-laugh-wink"></i>
+                    </div>
+                    <img
+                        class="sidebar-brand-logo mb-2"
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Tesla_circa_1890.jpeg/800px-Tesla_circa_1890.jpeg"
+                        alt="..."
+                    />
+                    <div class="sidebar-brand-text mx-3">John Doe</div>
+                </a>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0" />
+
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a
+                    >
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider" />
+
+                <!-- Heading -->
+                <div class="sidebar-heading">Schedule</div>
+
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a
+                        class="nav-link collapsed"
+                        href="#"
+                        data-toggle="collapse"
+                        data-target="#collapseTwo"
+                        aria-expanded="true"
+                        aria-controls="collapseTwo"
+                    >
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>New Schedule</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a
+                        class="nav-link collapsed"
+                        href="#"
+                        data-toggle="collapse"
+                        data-target="#collapseTwo"
+                        aria-expanded="true"
+                        aria-controls="collapseTwo"
+                    >
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>My Schedules</span>
+                    </a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider" />
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button
+                        class="rounded-circle border-0"
+                        id="sidebarToggle"
+                    ></button>
+                </div>
+            </ul>
             <form>
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -61,13 +147,14 @@
                         <option value="720">Monthly</option>
                     </select>
                 </div>
-
-                <div id="empty-cell"></div>
-                <div class="col mb-3">
+                <div class="d-flex flex-column gap-3">
+                    <div id="empty-cell"></div>
+                </div>
+                <div class="col mb-3 mt-2">
                     <button
                         type="button"
                         onclick="addDay()"
-                        class="btn btn-outline-info"
+                        class="btn btn-light"
                     >
                         Add Day
                     </button>
@@ -77,7 +164,7 @@
                     onclick="printDiv()"
                     class="btn btn-primary"
                 >
-                    Submit
+                    Print / Save
                 </button>
                 <button
                     type="button"
@@ -108,6 +195,7 @@
                 <div id="new-insertions"></div>
             </div>
         </main>
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
         <script>
             var days = [];
             var types = [
@@ -144,7 +232,7 @@
                 const tableHtml = days
                     .map(
                         (day) => `
-                    <table class="table table-bordered border-black">
+                    <table class="table table-bordered border-black day-table">
                         <thead>
                             <tr>
                                 <th id="day-name-preview-${day.id}">${
@@ -230,6 +318,11 @@
                 const taskDescriptionInput = document.getElementById(
                     `task-description-${day.id}`
                 );
+                if (
+                    !taskTypeInput.value.length ||
+                    !taskDescriptionInput.value.length
+                )
+                    return;
                 const newTask = {
                     id: day.tasks.length + 1,
                     type: taskTypeInput.value,
@@ -289,7 +382,7 @@
                                         day.id
                                     }, ${
                                     task.id
-                                })" class="btn btn-outline-info" style="padding: 6px 14px;">
+                                })" class="btn btn-outline-light" style="padding: 6px 14px;">
                                         -
                                     </button>
                                 </div>
@@ -324,12 +417,9 @@
                 };
                 days.push(day);
                 emptyCell.outerHTML = `
-                <div class="col" data-type="day-input">
+                <div class="col day-input-group" data-type="day-input">
                     <div class="row">
                         <div class="col">
-                            <label for="day-${
-                                day.id
-                            }" class="form-label">Day</label>
                             <select
                                 class="form-select"
                                 id="day-${day.id}"
@@ -370,7 +460,7 @@
                         <div class="col">
                             <button onclick="addTask(${
                                 day.id
-                            })" type="button" class="btn btn-outline-info">
+                            })" type="button" class="btn btn-light">
                                 +
                             </button>
                         </div>
