@@ -46,25 +46,25 @@ table {
 }
 
 
-#preview table.day-table:nth-child(1) th:nth-child(1) {
+#preview table.day-table:nth-child(4n+1) th:nth-child(1) {
     background-color: #ff3c6a;
     border: 1px solid #ff3c6a;
     color: #ffbabe;
 }
 
-#preview table.day-table:nth-child(2) th:nth-child(1) {
+#preview table.day-table:nth-child(4n+2) th:nth-child(1) {
     background-color: #5272e9;
     border: 1px solid #5272e9;
     color: #e9efff;
 }
 
-#preview table.day-table:nth-child(3) th:nth-child(1) {
+#preview table.day-table:nth-child(4n+3) th:nth-child(1) {
     background-color: #24b0c9;
     border: 1px solid #24b0c9;
     color: #e6feff;
 }
 
-#preview table.day-table:nth-child(4) th:nth-child(1) {
+#preview table.day-table:nth-child(4n+4) th:nth-child(1) {
     background-color: #d78d03;
     border: 1px solid #d78d03;
     color: #ffe7ba;
@@ -88,61 +88,61 @@ table {
     color: white;
 }
 
-.day-input-group:nth-child(1) {
+.day-input-group:nth-child(4n+1) {
     background-color: #ffbabe;
     border: 2px solid #ff3c6a;
 }
 
-.day-input-group:nth-child(2) {
+.day-input-group:nth-child(4n+2) {
     background-color: #e9efff;
     border: 2px solid #5272e9;
 }
 
-.day-input-group:nth-child(3) {
+.day-input-group:nth-child(4n+3) {
     background-color: #e6feff;
     border: 2px solid #24b0c9;
 }
 
-.day-input-group:nth-child(4) {
+.day-input-group:nth-child(4n+4) {
     background-color: #ffe7ba;
     border: 2px solid #d78d03;
 }
 
-.day-input-group:nth-child(1) .form-select {
+.day-input-group:nth-child(4n+1) .form-select {
     background-color: #ff3c6a;
 }
 
-.day-input-group:nth-child(2) .form-select {
+.day-input-group:nth-child(4n+2) .form-select {
     background-color: #5272e9;
 }
 
-.day-input-group:nth-child(3) .form-select {
+.day-input-group:nth-child(4n+3) .form-select {
     background-color: #24b0c9;
 }
 
-.day-input-group:nth-child(4) .form-select {
+.day-input-group:nth-child(4n+4) .form-select {
     background-color: #d78d03;
 }
 
-.day-input-group:nth-child(1) .form-control {
+.day-input-group:nth-child(4n+1) .form-control {
     background-color: #ffbabe;
     border: 2px solid #ff3c6a;
     color: #ff3c6a;
 }
 
-.day-input-group:nth-child(2) .form-control {
+.day-input-group:nth-child(4n+2) .form-control {
     background-color: #e9efff;
     border: 2px solid #5272e9;
     color: #5272e9;
 }
 
-.day-input-group:nth-child(3) .form-control {
+.day-input-group:nth-child(4n+3) .form-control {
     background-color: #e6feff;
     border: 2px solid #24b0c9;
     color: #24b0c9;
 }
 
-.day-input-group:nth-child(4) .form-control {
+.day-input-group:nth-child(4n+4) .form-control {
     background-color: #ffe7ba;
     border: 2px solid #d78d03;
     color: #d78d03;
